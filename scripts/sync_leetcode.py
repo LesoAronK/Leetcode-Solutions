@@ -1,5 +1,7 @@
-import os, requests
+import os
+import requests
 
+# Get your LeetCode cookies from GitHub Secrets
 CSRFTOKEN = os.getenv("LEETCODE_CSRF_TOKEN")
 LEETCODE_SESSION = os.getenv("LEETCODE_SESSION")
 
@@ -8,6 +10,7 @@ headers = {
     "cookie": f"LEETCODE_SESSION={LEETCODE_SESSION}; csrftoken={CSRFTOKEN}"
 }
 
+# Map LeetCode languages to file extensions
 ext_map = {
     "python3": "py",
     "java": "java",
@@ -21,7 +24,7 @@ offset = 0
 limit = 50
 latest_solutions = {}
 
-# Fetch all submissions
+# Fetch ALL submissions until none left
 while True:
     url = f"https://leetcode.com/api/submissions/?offset={offset}&limit={limit}"
     resp = requests.get(url, headers=headers)
@@ -31,7 +34,7 @@ while True:
         break
 
     for sub in submissions:
-        if sub["status_display"] == "Accepted":
+        if sub["status_display"] == "Accepted":   # only correct solutions
             qid = sub["question_id"]
             # overwrite older with newer → keeps latest accepted
             latest_solutions[qid] = sub
@@ -55,10 +58,12 @@ for qid, sub in latest_solutions.items():
 
     os.makedirs(folder, exist_ok=True)
 
+    # README.md with problem link
     with open(os.path.join(folder, "README.md"), "w", encoding="utf-8") as f:
         f.write(f"# {title} (Problem #{qid})\n\n")
         f.write(f"Link: https://leetcode.com/problems/{slug}/\n")
 
+    # Save solution file
     ext = ext_map.get(lang, "txt")
     with open(os.path.join(folder, f"solution.{ext}"), "w", encoding="utf-8") as f:
         f.write(code)
