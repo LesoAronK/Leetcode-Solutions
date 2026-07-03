@@ -2,13 +2,19 @@ name: Auto LeetCode Sync
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 * * * *"   # runs hourly
+    - cron: "*/10 * * * *"   # runs every 10 minutes
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     permissions:
       contents: write   # allow commits
+
+    # Prevent overlapping runs from racing on the same commit/state file
+    concurrency:
+      group: leetcode-sync
+      cancel-in-progress: false
+
     steps:
       - uses: actions/checkout@v3
 
