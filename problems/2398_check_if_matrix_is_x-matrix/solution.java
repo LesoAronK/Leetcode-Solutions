@@ -4,7 +4,7 @@ class Solution {
         
         for(int i=0;i<n;i++){
             for(int j=0;j<n;j++){
-                if((j==i) || (n-i-1==j)){
+                if((j==i) || j==(n-i-1)){
                     if(grid[i][j]==0){
                         return false;
                     }
