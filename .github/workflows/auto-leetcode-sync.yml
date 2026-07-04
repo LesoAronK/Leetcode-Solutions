@@ -2,7 +2,7 @@ name: Auto LeetCode Sync
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 * * * *"   # runs every 1 hour
+    - cron: "0 9 * * 1-5"   
 
 jobs:
   sync:
